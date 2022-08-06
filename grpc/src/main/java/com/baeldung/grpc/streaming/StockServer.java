@@ -113,7 +113,7 @@ public class StockServer {
             return new StreamObserver<Stock>() {
                 @Override
                 public void onNext(Stock request) {
-
+                    logger.info("Request received from client:\n" + request);
                     for (int i = 1; i <= 5; i++) {
 
                         StockQuote stockQuote = StockQuote.newBuilder()

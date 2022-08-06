@@ -153,9 +153,9 @@ public class StockClient {
         try {
             StockClient client = new StockClient(channel);
 
-            client.serverSideStreamingListOfStockPrices();
+            // client.serverSideStreamingListOfStockPrices();
 
-            client.clientSideStreamingGetStatisticsOfStocks();
+            // client.clientSideStreamingGetStatisticsOfStocks();
 
             client.bidirectionalStreamingGetListsStockQuotes();
 
