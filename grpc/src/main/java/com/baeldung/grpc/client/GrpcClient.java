@@ -8,6 +8,7 @@ import com.baeldung.grpc.HelloServiceGrpc;
 
 import com.baeldung.grpc.streaming.StockClient;
 import io.grpc.ManagedChannel;
+import io.grpc.netty.NettyChannelBuilder;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import java.util.concurrent.ExecutorService;
@@ -19,8 +20,31 @@ public class GrpcClient {
     private static final Logger logger = LoggerFactory.getLogger(GrpcClient.class.getName());
 
     public static void main(String[] args) throws InterruptedException {
-        // version1();
-        version2();
+        version0();
+        /*
+        version5();
+        channelS.shutdown();
+        */
+    }
+
+    static void version0() throws InterruptedException {
+        ManagedChannel channel = NettyChannelBuilder.forAddress("localhost", 8080)
+                .usePlaintext()
+                .build();
+
+        HelloServiceGrpc.HelloServiceBlockingStub stub
+                = HelloServiceGrpc.newBlockingStub(channel);
+
+        for (int i = 0; i < 1; i++) {
+            HelloResponse helloResponse = stub.hello(HelloRequest.newBuilder()
+                    .setFirstName("Baeldung")
+                    .setLastName("gRPC")
+                    .build());
+            logger.info("V0: Response received from server:\n" + helloResponse);
+            // Thread.sleep(100);
+        }
+
+        channel.shutdown();
     }
 
     static void version1() throws InterruptedException {
@@ -36,8 +60,8 @@ public class GrpcClient {
                 .setFirstName("Baeldung")
                 .setLastName("gRPC")
                 .build());
-            logger.info("Response received from server:\n" + helloResponse);
-            Thread.sleep(100);
+            logger.info("V1: Response received from server:\n" + helloResponse);
+            //Thread.sleep(100);
         }
 
         channel.shutdown();
@@ -148,5 +172,24 @@ public class GrpcClient {
                 }
             );
         }
+    }
+
+    static ManagedChannel channelS = ManagedChannelBuilder.forAddress("localhost", 8080)
+            .usePlaintext()
+            .build();
+
+    static HelloServiceGrpc.HelloServiceBlockingStub stubS
+            = HelloServiceGrpc.newBlockingStub(channelS);
+    static void version5() throws InterruptedException {
+        for (int i = 0; i < 10; i++) {
+            HelloResponse helloResponse = stubS.hello(HelloRequest.newBuilder()
+                    .setFirstName("Baeldung")
+                    .setLastName("gRPC")
+                    .build());
+            logger.info("V5: Response received from server:\n" + helloResponse);
+            // Thread.sleep(100);
+        }
+
+        // channel.shutdown();
     }
 }
